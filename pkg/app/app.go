@@ -29,11 +29,11 @@ func (a *App) Create(name string) error {
 		return errors.Wrap(err, "unable to create dir")
 	}
 
-	if err := createFile(fmt.Sprintf("%s/up.sql")); err != nil {
+	if err := createFile(fmt.Sprintf("%s/up.sql", name)); err != nil {
 		return errors.Wrap(err, "unable to create up.sql")
 	}
 
-	if err := createFile(fmt.Sprintf("%s/down.sql")); err != nil {
+	if err := createFile(fmt.Sprintf("%s/down.sql", name)); err != nil {
 		return errors.Wrap(err, "unable to create down.sql")
 	}
 	return nil
