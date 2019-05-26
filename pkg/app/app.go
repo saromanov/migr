@@ -25,15 +25,16 @@ func New(driver string) *App {
 // for migrations up and down. Also, it creates
 // records on db
 func (a *App) Create(name string) error {
-	if err := os.Mkdir(fmt.Sprintf("%s_%v", name, time.Now().UnixNano()), 0755); err != nil {
+	path := fmt.Sprintf("migr_%s_%v", name, time.Now().UnixNano())
+	if err := os.Mkdir(path, 0755); err != nil {
 		return errors.Wrap(err, "unable to create dir")
 	}
 
-	if err := createFile(fmt.Sprintf("%s/up.sql", name)); err != nil {
+	if err := createFile(fmt.Sprintf("%s/up.sql", path)); err != nil {
 		return errors.Wrap(err, "unable to create up.sql")
 	}
 
-	if err := createFile(fmt.Sprintf("%s/down.sql", name)); err != nil {
+	if err := createFile(fmt.Sprintf("%s/down.sql", path)); err != nil {
 		return errors.Wrap(err, "unable to create down.sql")
 	}
 	return nil
