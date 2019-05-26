@@ -1,16 +1,26 @@
 package main
 
 import (
-	"github.com/pkg/errors"
-	"github.com/urfave/cli"
 	"log"
 	"os"
+
+	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/app"
+	"github.com/urfave/cli"
 )
 
 func makeApp(c *cli.Context) error {
 	driver := c.String("driver")
 	if driver == "" {
 		return errors.New("driver is not defined")
+	}
+
+	a := app.New(driver)
+	name := c.String("new")
+	if name != "" {
+		if err := a.Create(name); err != nil {
+			return err
+		}
 	}
 	return nil
 }
