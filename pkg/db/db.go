@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+const dataBaseTable = "migr"
+
 // DB provides handling of db data
 type DB struct {
 	Username string
@@ -34,6 +36,21 @@ func CreateTable(d *DB) error {
 	err = db.PingContext(ctx)
 	if err != nil {
 		return errors.Wrap(err, "error to ping db")
+	}
+
+	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s", dataBaseTable)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.Exec(fmt.Sprintf("USE %s", dataBaseTable))
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = db.Exec(fmt.Sprintf("CREATE TABLE %s( id integer, data varchar(32) )", dataBaseTable))
+	if err != nil {
+		panic(err)
 	}
 	return nil
 }
