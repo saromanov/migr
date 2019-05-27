@@ -40,17 +40,17 @@ func CreateTable(d *DB) error {
 
 	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s", dataBaseTable))
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "unable to create database")
 	}
 
 	_, err = db.Exec(fmt.Sprintf("USE %s", dataBaseTable))
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "unable to execute")
 	}
 
 	_, err = db.Exec(fmt.Sprintf("CREATE TABLE %s( id integer, version varchar(128), changes varchar(128)", dataBaseTable))
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "unable to create migr table")
 	}
 	return nil
 }
