@@ -38,7 +38,7 @@ func CreateTable(d *DB) error {
 		return errors.Wrap(err, "error to ping db")
 	}
 
-	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s", dataBaseTable)
+	_, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s", dataBaseTable))
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +48,7 @@ func CreateTable(d *DB) error {
 		panic(err)
 	}
 
-	_, err = db.Exec(fmt.Sprintf("CREATE TABLE %s( id integer, data varchar(32) )", dataBaseTable))
+	_, err = db.Exec(fmt.Sprintf("CREATE TABLE %s( id integer, version varchar(128), changes varchar(128)", dataBaseTable))
 	if err != nil {
 		panic(err)
 	}
