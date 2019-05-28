@@ -32,6 +32,7 @@ func CreateTable(d *DB) error {
 	if err != nil {
 		return errors.Wrap(err, "error creating connection pool")
 	}
+	defer db.Close()
 	ctx := context.Background()
 	err = db.PingContext(ctx)
 	if err != nil {
