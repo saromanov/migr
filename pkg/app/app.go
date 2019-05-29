@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/db"
 )
 
 // App provides impementation of the main logic
@@ -27,6 +28,9 @@ func New(driver string) *App {
 // records on db
 func (a *App) Create(name string) error {
 	path := fmt.Sprintf("migr_%s_%v", name, time.Now().UnixNano())
+	if err := db.CreateTable(nil); err != nil {
+		return errors.Wrap(err, "unable to create migr table")
+	}
 	if err := os.Mkdir(path, 0755); err != nil {
 		return errors.Wrap(err, "unable to create dir")
 	}
