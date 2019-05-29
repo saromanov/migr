@@ -2,9 +2,10 @@ package app
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"time"
-	"io/ioutil"
+
 	"github.com/pkg/errors"
 )
 
@@ -46,6 +47,12 @@ func (a *App) Run(path string) error {
 	if err != nil {
 		return errors.Wrap(err, "unable to read dir")
 	}
+
+	for _, f := range files {
+		fmt.Println(f)
+	}
+
+	return nil
 }
 
 func createFile(path string) error {
