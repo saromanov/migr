@@ -22,6 +22,13 @@ func makeApp(c *cli.Context) error {
 			return err
 		}
 	}
+
+	run := c.String("run")
+	if run != "" {
+		if err := a.Run(run); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 func main() {

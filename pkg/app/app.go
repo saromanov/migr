@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"time"
-
+	"io/ioutil"
 	"github.com/pkg/errors"
 )
 
@@ -38,6 +38,14 @@ func (a *App) Create(name string) error {
 		return errors.Wrap(err, "unable to create down.sql")
 	}
 	return nil
+}
+
+// Run provides starting of migrations
+func (a *App) Run(path string) error {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return errors.Wrap(err, "unable to read dir")
+	}
 }
 
 func createFile(path string) error {
