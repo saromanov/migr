@@ -44,6 +44,21 @@ func main() {
 			Value: "",
 			Usage: "Create a new migration",
 		},
+		cli.StringFlag{
+			Name:  "password",
+			Value: "",
+			Usage: "password for db",
+		},
+		cli.StringFlag{
+			Name:  "username",
+			Value: "",
+			Usage: "username for db",
+		},
+		cli.StringFlag{
+			Name:  "dbname",
+			Value: "",
+			Usage: "db",
+		},
 	}
 	app.Name = "migr"
 	app.Usage = "tool for SQL migrations"
