@@ -13,13 +13,21 @@ import (
 // App provides impementation of the main logic
 // for the app
 type App struct {
-	driver string
+	driver   string
+	password string
+	username string
+	dbname   string
+	port     string
+	host     int
 }
 
 // New creates app
-func New(driver string) *App {
+func New(driver, username, password, dbname string) *App {
 	return &App{
-		driver: driver,
+		driver:   driver,
+		username: username,
+		password: password,
+		dbname:   dbname,
 	}
 }
 
@@ -28,7 +36,13 @@ func New(driver string) *App {
 // records on db
 func (a *App) Create(name string) error {
 	path := fmt.Sprintf("migr_%s_%v", name, time.Now().UnixNano())
-	if err := db.CreateTable(nil); err != nil {
+	if err := db.CreateTable(&db.DB{
+		Username: a.username,
+		Password: a.password,
+		Database: a.dbname,
+		Host:     a.host,
+		Port:     a.port,
+	}); err != nil {
 		return errors.Wrap(err, "unable to create migr table")
 	}
 	if err := os.Mkdir(path, 0755); err != nil {
