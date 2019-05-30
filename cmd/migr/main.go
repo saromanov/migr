@@ -59,6 +59,16 @@ func main() {
 			Value: "",
 			Usage: "db",
 		},
+		cli.StringFlag{
+			Name:  "host",
+			Value: "",
+			Usage: "db",
+		},
+		cli.IntFlag{
+			Name:  "host",
+			Value: 0,
+			Usage: "db",
+		},
 	}
 	app.Name = "migr"
 	app.Usage = "tool for SQL migrations"
