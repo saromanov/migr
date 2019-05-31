@@ -28,6 +28,8 @@ func New(driver, username, password, dbname, host string, port int) *App {
 		username: username,
 		password: password,
 		dbname:   dbname,
+		host:     host,
+		port:     port,
 	}
 }
 
