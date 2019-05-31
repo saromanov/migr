@@ -62,12 +62,12 @@ func main() {
 		cli.StringFlag{
 			Name:  "host",
 			Value: "",
-			Usage: "db",
+			Usage: "connect to db",
 		},
 		cli.IntFlag{
-			Name:  "host",
+			Name:  "port",
 			Value: 0,
-			Usage: "db",
+			Usage: "connect to db",
 		},
 	}
 	app.Name = "migr"
