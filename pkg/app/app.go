@@ -65,9 +65,28 @@ func (a *App) Create(name string) error {
 
 // Run provides starting of migrations
 func (a *App) Run(path string) error {
+	dirs, err := getMigrDirs(path)
+	if err != nil {
+		return err
+	}
+	fmt.Println(dirs)
+	return nil
+}
+
+func createFile(path string) error {
+	if _, err := os.Create(path); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// getMigrDirs returns dirs which contains
+// "migr" on names
+func getMigrDirs(path string) ([]string, error) {
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
-		return errors.Wrap(err, "unable to read dir")
+		return []string{}, errors.Wrap(err, "unable to read dir")
 	}
 
 	dirs := []string{}
@@ -81,13 +100,5 @@ func (a *App) Run(path string) error {
 		}
 	}
 
-	return nil
-}
-
-func createFile(path string) error {
-	if _, err := os.Create(path); err != nil {
-		return err
-	}
-
-	return nil
+	return dirs, nil
 }
