@@ -42,6 +42,7 @@ func (a *App) Create(name string) error {
 		Database: a.dbname,
 		Host:     a.host,
 		Port:     a.port,
+		Driver:   a.driver,
 	}); err != nil {
 		return errors.Wrap(err, "unable to create migr table")
 	}
