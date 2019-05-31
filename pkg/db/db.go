@@ -26,8 +26,8 @@ func CreateTable(d *DB) error {
 	if d == nil {
 		return errors.New("db is not defined")
 	}
-	connString := fmt.Sprintf("host=%s;user=%s;password=%s;port=%d;dbname=%s;",
-		d.Host, d.Username, d.Password, d.Port, d.Database)
+	connString := fmt.Sprintf("user=%s password=%s dbname=%s",
+		d.Username, d.Password, d.Database)
 
 	db, err := sql.Open(d.Driver, connString)
 	if err != nil {
