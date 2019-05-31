@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/pkg/errors"
@@ -64,13 +65,20 @@ func (a *App) Create(name string) error {
 
 // Run provides starting of migrations
 func (a *App) Run(path string) error {
-	files, err := ioutil.ReadDir(path)
+	files, err := ioutil.ReadDir(".")
 	if err != nil {
 		return errors.Wrap(err, "unable to read dir")
 	}
 
+	dirs := []string{}
 	for _, f := range files {
-		fmt.Println(f)
+		if !f.IsDir() {
+			continue
+		}
+		name := f.Name()
+		if strings.Contains(name, "migr") {
+			dirs = append(dirs, name)
+		}
 	}
 
 	return nil

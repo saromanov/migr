@@ -45,6 +45,11 @@ func main() {
 			Usage: "Create a new migration",
 		},
 		cli.StringFlag{
+			Name:  "run",
+			Value: "",
+			Usage: "Applying of migrations",
+		},
+		cli.StringFlag{
 			Name:  "password",
 			Value: "",
 			Usage: "password for db",
