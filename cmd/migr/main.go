@@ -15,7 +15,7 @@ func makeApp(c *cli.Context) error {
 		return errors.New("driver is not defined")
 	}
 
-	a := app.New(driver)
+	a := app.New(driver, c.String("username"), c.String("password"), c.String("dbname"), c.String("host"), c.Int("port"))
 	name := c.String("new")
 	if name != "" {
 		if err := a.Create(name); err != nil {

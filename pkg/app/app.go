@@ -17,12 +17,12 @@ type App struct {
 	password string
 	username string
 	dbname   string
-	port     string
-	host     int
+	port     int
+	host     string
 }
 
 // New creates app
-func New(driver, username, password, dbname string) *App {
+func New(driver, username, password, dbname, host string, port int) *App {
 	return &App{
 		driver:   driver,
 		username: username,
