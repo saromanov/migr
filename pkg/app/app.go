@@ -111,8 +111,9 @@ func getMigrDirs(path string) ([]directory, error) {
 				continue
 			}
 
-			timestamp, err := strconv.ParseInt(parts[2], 2, 64)
+			timestamp, err := strconv.ParseInt(parts[2], 10, 64)
 			if err != nil {
+				fmt.Println(err)
 				continue
 			}
 			dirs = append(dirs, directory{
