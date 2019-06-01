@@ -23,7 +23,7 @@ type App struct {
 }
 
 type directory struct {
-	name string
+	name      string
 	timestamp int64
 }
 
@@ -88,21 +88,21 @@ func createFile(path string) error {
 
 // getMigrDirs returns dirs which contains
 // "migr" on names
-func getMigrDirs(path string) ([]Directory, error) {
+func getMigrDirs(path string) ([]directory, error) {
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
-		return []Directory{}, errors.Wrap(err, "unable to read dir")
+		return []directory{}, errors.Wrap(err, "unable to read dir")
 	}
 
-	dirs := []Directory{}
+	dirs := []directory{}
 	for _, f := range files {
 		if !f.IsDir() {
 			continue
 		}
 		name := f.Name()
 		if strings.Contains(name, "migr") {
-			dirs = append(dirs, Directory{
-				name: name,
+			dirs = append(dirs, directory{
+				name:      name,
 				timestamp: 0,
 			})
 		}
