@@ -80,6 +80,10 @@ func (a *App) Run(path string) error {
 		return errors.New("migr directories is not found")
 	}
 	dirs = sortMigrDirs(dirs)
+
+	if err := applyMigrations(dirs); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -133,4 +137,16 @@ func sortMigrDirs(dirs []directory) []directory {
 		return dirs[i].timestamp < dirs[j].timestamp
 	})
 	return dirs
+}
+
+// applyMigrations makes migrations
+func applyMigrations(dirs []directory) error {
+	for _, d := range dirs {
+		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
+		if err != nil {
+			return errors.Wrap(err, "unable to read up.sql")
+		}
+		fmt.Println(string(file))
+	}
+	return nil
 }
