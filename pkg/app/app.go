@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -105,10 +106,18 @@ func getMigrDirs(path string) ([]directory, error) {
 		}
 		name := f.Name()
 		if strings.Contains(name, "migr") {
+			parts := strings.Split(name, "_")
+			if len(parts) == 0 || len(parts) < 2 {
+				continue
+			}
 
+			timestamp, err := strconv.ParseInt(parts[2], 2, 64)
+			if err != nil {
+				continue
+			}
 			dirs = append(dirs, directory{
 				name:      name,
-				timestamp: 0,
+				timestamp: timestamp,
 			})
 		}
 	}
