@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -101,6 +102,7 @@ func getMigrDirs(path string) ([]directory, error) {
 		}
 		name := f.Name()
 		if strings.Contains(name, "migr") {
+
 			dirs = append(dirs, directory{
 				name:      name,
 				timestamp: 0,
@@ -113,6 +115,9 @@ func getMigrDirs(path string) ([]directory, error) {
 
 // sortMigrDirs applyins sorting of directories
 // by timestamp on the name
-func sortMigrDirs(dirs []string) []string {
-
+func sortMigrDirs(dirs []directory) []directory {
+	sort.Slice(dirs[:], func(i, j int) bool {
+		return dirs[i].timestamp < dirs[j].timestamp
+	})
+	return dirs
 }
