@@ -22,6 +22,11 @@ type App struct {
 	host     string
 }
 
+type directory struct {
+	name string
+	timestamp int64
+}
+
 // New creates app
 func New(driver, username, password, dbname, host string, port int) *App {
 	return &App{
@@ -83,22 +88,31 @@ func createFile(path string) error {
 
 // getMigrDirs returns dirs which contains
 // "migr" on names
-func getMigrDirs(path string) ([]string, error) {
+func getMigrDirs(path string) ([]Directory, error) {
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
-		return []string{}, errors.Wrap(err, "unable to read dir")
+		return []Directory{}, errors.Wrap(err, "unable to read dir")
 	}
 
-	dirs := []string{}
+	dirs := []Directory{}
 	for _, f := range files {
 		if !f.IsDir() {
 			continue
 		}
 		name := f.Name()
 		if strings.Contains(name, "migr") {
-			dirs = append(dirs, name)
+			dirs = append(dirs, Directory{
+				name: name,
+				timestamp: 0,
+			})
 		}
 	}
 
 	return dirs, nil
+}
+
+// sortMigrDirs applyins sorting of directories
+// by timestamp on the name
+func sortMigrDirs(dirs []string) []string {
+
 }
