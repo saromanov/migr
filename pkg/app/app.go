@@ -75,7 +75,10 @@ func (a *App) Run(path string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(dirs)
+	if len(dirs) == 0 {
+		return errors.New("migr directories is not found")
+	}
+	dirs = sortMigrDirs(dirs)
 	return nil
 }
 
