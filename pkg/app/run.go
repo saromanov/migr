@@ -1,7 +1,6 @@
 package app
 
 import (
-	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"sort"
@@ -9,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/db"
 )
 
 // Run provides starting of migrations
@@ -22,7 +22,7 @@ func (a *App) Run(path string) error {
 	}
 	dirs = sortMigrDirs(dirs)
 
-	if err := applyMigrations(dirs); err != nil {
+	if err := a.applyMigrations(dirs); err != nil {
 		return err
 	}
 	return nil
@@ -73,28 +73,16 @@ func sortMigrDirs(dirs []directory) []directory {
 }
 
 // applyMigrations makes migrations
-func applyMigrations(dirs []directory) error {
+func (a *App) applyMigrations(dirs []directory) error {
 	for _, d := range dirs {
 		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
 		if err != nil {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
-		fmt.Println(string(file))
-	}
-	return nil
-}
 
-// applyCommand provides applying of the sql command
-func (a *App) applyCommand(command string) error {
-	db, err := sql.Open("mysql", "user:password@/dbname")
-	if err != nil {
-		return errors.Wrap(err, "unable to open connection")
+		if err := db.ExecuteCommand(&db.DB{}, string(file)); err != nil {
+			return errors.Wrap(err, "unable to apply command")
+		}
 	}
-
-	res, err := db.Exec(command)
-	if err != nil {
-		return errors.Wrap(err, "unable to execute command")
-	}
-
 	return nil
 }

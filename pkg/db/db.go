@@ -46,3 +46,20 @@ func CreateTable(d *DB) error {
 	}
 	return nil
 }
+
+// ExecuteCommand provides execution of the command
+func ExecuteCommand(d *DB, command string) error {
+	connString := fmt.Sprintf("user=%s password=%s dbname=%s",
+		d.Username, d.Password, d.Database)
+	db, err := sql.Open(d.Driver, connString)
+	if err != nil {
+		return errors.Wrap(err, "unable to open connection")
+	}
+
+	_, err = db.Exec(command)
+	if err != nil {
+		return errors.Wrap(err, "unable to execute command")
+	}
+
+	return nil
+}
