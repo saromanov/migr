@@ -1,12 +1,16 @@
 package app
 
 import (
+	"database/sql"
+	"fmt"
+	"io/ioutil"
 	"sort"
 	"strconv"
 	"strings"
-	"io/ioutil"
+
 	"github.com/pkg/errors"
 )
+
 // Run provides starting of migrations
 func (a *App) Run(path string) error {
 	dirs, err := getMigrDirs(path)
@@ -77,5 +81,20 @@ func applyMigrations(dirs []directory) error {
 		}
 		fmt.Println(string(file))
 	}
+	return nil
+}
+
+// applyCommand provides applying of the sql command
+func (a *App) applyCommand(command string) error {
+	db, err := sql.Open("mysql", "user:password@/dbname")
+	if err != nil {
+		return errors.Wrap(err, "unable to open connection")
+	}
+
+	res, err := db.Exec(command)
+	if err != nil {
+		return errors.Wrap(err, "unable to execute command")
+	}
+
 	return nil
 }
