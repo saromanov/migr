@@ -26,10 +26,8 @@ func (d *DB) CreateTable() error {
 	if d == nil {
 		return errors.New("db is not defined")
 	}
-	connString := fmt.Sprintf("user=%s password=%s dbname=%s",
-		d.Username, d.Password, d.Database)
 
-	db, err := sql.Open(d.Driver, connString)
+	db, err := sql.Open(d.Driver, d.getConnectionString())
 	if err != nil {
 		return errors.Wrap(err, "error creating connection pool")
 	}
@@ -62,4 +60,19 @@ func (d *DB) ExecuteCommand(command string) error {
 	}
 
 	return nil
+}
+
+// checkMigrations provides checking of history for migrations
+func (d *DB) checkMigrations() error {
+	db, err := sql.Open(d.Driver, d.getConnectionString())
+	if err != nil {
+		return errors.Wrap(err, "error creating connection pool")
+	}
+	defer db.Close()
+	return nil
+}
+
+func (d *DB) getConnectionString() string {
+	return fmt.Sprintf("user=%s password=%s dbname=%s",
+		d.Username, d.Password, d.Database)
 }
