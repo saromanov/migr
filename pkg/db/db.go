@@ -22,7 +22,7 @@ type DB struct {
 }
 
 // CreateTable provides creating of the migr table
-func CreateTable(d *DB) error {
+func (d *DB) CreateTable() error {
 	if d == nil {
 		return errors.New("db is not defined")
 	}
@@ -48,7 +48,7 @@ func CreateTable(d *DB) error {
 }
 
 // ExecuteCommand provides execution of the command
-func ExecuteCommand(d *DB, command string) error {
+func (d *DB) ExecuteCommand(command string) error {
 	connString := fmt.Sprintf("user=%s password=%s dbname=%s",
 		d.Username, d.Password, d.Database)
 	db, err := sql.Open(d.Driver, connString)

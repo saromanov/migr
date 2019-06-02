@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/saromanov/migr/pkg/db"
 )
 
 // Run provides starting of migrations
@@ -80,15 +79,8 @@ func (a *App) applyMigrations(dirs []directory) error {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
 
-		if err := db.ExecuteCommand(&db.DB{
-			Driver:   a.driver,
-			Host:     a.host,
-			Port:     a.port,
-			Database: a.dbname,
-			Username: a.username,
-			Password: a.password,
-		}, string(file)); err != nil {
-			return errors.Wrap(err, "unable to apply command")
+		if err := a.db.ExecuteCommand(string(file)); err != nil {
+			return errors.Wrap(err, "migrations is not applied")
 		}
 	}
 	return nil
