@@ -80,7 +80,14 @@ func (a *App) applyMigrations(dirs []directory) error {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
 
-		if err := db.ExecuteCommand(&db.DB{}, string(file)); err != nil {
+		if err := db.ExecuteCommand(&db.DB{
+			Driver:   a.driver,
+			Host:     a.host,
+			Port:     a.port,
+			Database: a.dbname,
+			Username: a.username,
+			Password: a.password,
+		}, string(file)); err != nil {
 			return errors.Wrap(err, "unable to apply command")
 		}
 	}
