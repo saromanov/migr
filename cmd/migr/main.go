@@ -50,6 +50,11 @@ func main() {
 			Usage: "Applying of migrations",
 		},
 		cli.StringFlag{
+			Name:  "down",
+			Value: "",
+			Usage: "revert migrations",
+		},
+		cli.StringFlag{
 			Name:  "password",
 			Value: "",
 			Usage: "password for db",
