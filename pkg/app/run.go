@@ -85,3 +85,17 @@ func (a *App) applyMigrations(dirs []directory) error {
 	}
 	return nil
 }
+
+// applyMigration provides applying of migration
+func (a *App) applyMigration(path string) error {
+	file, err := ioutil.ReadFile(path)
+	if err != nil {
+		return errors.Wrap(err, "unable to read up.sql")
+	}
+
+	if err := a.db.ExecuteCommand(string(file)); err != nil {
+		return errors.Wrap(err, "migrations is not applied")
+	}
+
+	return nil
+}
