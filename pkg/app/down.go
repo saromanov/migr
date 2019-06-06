@@ -1,6 +1,8 @@
 package app
 
 import (
+	"strings"
+
 	"github.com/pkg/errors"
 )
 
@@ -12,6 +14,17 @@ func (a *App) Down(path, version string) error {
 	}
 	if len(dirs) == 0 {
 		return errors.New("migr directories is not found")
+	}
+
+	var fileName string
+	for _, dir := range dirs {
+		if strings.Contains(dir.name, version) {
+			fileName = dir.name
+			break
+		}
+	}
+	if fileName == "" {
+		return errors.New("unable to find file")
 	}
 
 	return nil
