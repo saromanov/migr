@@ -42,21 +42,22 @@ func getMigrDirs(path string) ([]directory, error) {
 			continue
 		}
 		name := f.Name()
-		if strings.Contains(name, "migr") {
-			parts := strings.Split(name, "_")
-			if len(parts) == 0 || len(parts) < 2 {
-				continue
-			}
-
-			timestamp, err := strconv.ParseInt(parts[2], 10, 64)
-			if err != nil {
-				continue
-			}
-			dirs = append(dirs, directory{
-				name:      name,
-				timestamp: timestamp,
-			})
+		if !strings.Contains(name, "migr") {
+			continue
 		}
+		parts := strings.Split(name, "_")
+		if len(parts) == 0 || len(parts) < 2 {
+			continue
+		}
+
+		timestamp, err := strconv.ParseInt(parts[2], 10, 64)
+		if err != nil {
+			continue
+		}
+		dirs = append(dirs, directory{
+			name:      name,
+			timestamp: timestamp,
+		})
 	}
 
 	return dirs, nil
