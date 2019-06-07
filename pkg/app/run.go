@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/model"
 )
 
 // Run provides starting of migrations
@@ -97,4 +98,13 @@ func (a *App) applyMigration(path string) error {
 	}
 
 	return nil
+}
+
+// get list of applied migrations from db
+func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
+	migs, err := a.db.GetMigrationVersions()
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to get list of migrations")
+	}
+	return migs, nil
 }
