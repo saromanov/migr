@@ -88,6 +88,7 @@ func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+	return migs, nil
 }
 
 // ExecuteCommand provides execution of the command
