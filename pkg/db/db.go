@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"net/http"
 
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -77,18 +76,17 @@ func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
 	}
 	defer rows.Close()
 
-	bks := make([]*model.Migration, 0)
+	migs := make([]*model.Migration, 0)
 	for rows.Next() {
-		bk := new(model.Migration)
-		err := rows.Scan(&bk.ID, &bk.title, &bk.author, &bk.price)
+		mig := new(model.Migration)
+		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes)
 		if err != nil {
 			return nil, err
 		}
-		bks = append(bks, bk)
+		migs = append(migs, mig)
 	}
 	if err = rows.Err(); err != nil {
-		http.Error(w, http.StatusText(500), 500)
-		return
+		return nil, err
 	}
 }
 
