@@ -53,7 +53,7 @@ func (d *DB) WriteMigrationVersion(version string) error {
 		return errors.Wrap(err, "unable to open connection")
 	}
 
-	_, err = db.Exec(fmt.Sprintf("INSERT INTO(version, changes) %s($1, $2, $3)", dataBaseTable), version, version)
+	_, err = db.Exec(fmt.Sprintf("INSERT INTO %s(version, changes) VALUES ($1, $2, $3)", dataBaseTable), version, version)
 	if err != nil {
 		return fmt.Errorf("unable to execute: %v", err)
 	}
