@@ -75,6 +75,10 @@ func sortMigrDirs(dirs []directory) []directory {
 // applyMigrations makes migrations
 func (a *App) applyMigrations(dirs []directory) error {
 	for _, d := range dirs {
+		ok := a.isApplyed(d)
+		if ok {
+			continue
+		}
 		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
 		if err != nil {
 			return errors.Wrap(err, "unable to read up.sql")
@@ -108,4 +112,8 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 		return nil, errors.Wrap(err, "unable to get list of migrations")
 	}
 	return migs, nil
+}
+
+func (a *App) isApplyed(d directory) bool {
+	return false
 }

@@ -5,4 +5,5 @@ type Migration struct {
 	ID      int64
 	Version int64
 	Changes string
+	Hash    string
 }
