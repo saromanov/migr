@@ -4,9 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net/http"
 
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/model"
 )
 
 const dataBaseTable = "migr"
@@ -59,6 +61,35 @@ func (d *DB) WriteMigrationVersion(version string) error {
 	}
 
 	return nil
+}
+
+// GetMigrationVersions returns list of migrations
+func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
+	connStr := d.getConnectionString()
+	db, err := sql.Open(d.Driver, connStr)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to open connection")
+	}
+
+	rows, err := db.Query(fmt.Sprintf("SELECT * FROM %s", dataBaseTable))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	bks := make([]*model.Migration, 0)
+	for rows.Next() {
+		bk := new(model.Migration)
+		err := rows.Scan(&bk.ID, &bk.title, &bk.author, &bk.price)
+		if err != nil {
+			return nil, err
+		}
+		bks = append(bks, bk)
+	}
+	if err = rows.Err(); err != nil {
+		http.Error(w, http.StatusText(500), 500)
+		return
+	}
 }
 
 // ExecuteCommand provides execution of the command
