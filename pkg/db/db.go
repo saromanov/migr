@@ -45,6 +45,27 @@ func (d *DB) CreateTable() error {
 	return nil
 }
 
+// WriteMigrationVersion provides writing of migration version
+func (d *DB) WriteMigrationVersion(version string) error{
+	connStr := d.getConnectionString()
+	db, err := sql.Open(d.Driver, connStr)
+	if err != nil {
+		return errors.Wrap(err, "unable to open connection")
+	}
+
+	result, err := db.Exec(fmt.Sprintf("INSERT INTO books %s($1, $2, $3)", dataBaseTable), )
+    if err != nil {
+        return fmt.Errorf("unable to execute: %v", err)
+    }
+
+    rowsAffected, err := result.RowsAffected()
+
+    if err != nil {
+        http.Error(w, http.StatusText(500), 500)
+        return
+    }
+}
+
 // ExecuteCommand provides execution of the command
 func (d *DB) ExecuteCommand(command string) error {
 	connString := fmt.Sprintf("user=%s password=%s dbname=%s",
