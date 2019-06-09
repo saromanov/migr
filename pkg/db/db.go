@@ -91,8 +91,20 @@ func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
 	return migs, nil
 }
 
-// GetMugrationByTheVersion returns migration by the version
-func GetMigrationByTheVersion(version int64)(*model.Migration, error) {
+// GetMigrationByTheVersion returns migration by the version
+func (d *DB) GetMigrationByTheVersion(version int64) (*model.Migration, error) {
+	connStr := d.getConnectionString()
+	db, err := sql.Open(d.Driver, connStr)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to open connection")
+	}
+
+	rows, err := db.Query(fmt.Sprintf("SELECT * FROM %s WHERE version = $1", dataBaseTable), version)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
 	return nil, nil
 }
 
