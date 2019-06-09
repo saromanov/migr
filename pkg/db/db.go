@@ -91,6 +91,11 @@ func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
 	return migs, nil
 }
 
+// GetMugrationByTheVersion returns migration by the version
+func GetMigrationByTheVersion(version int64)(*model.Migration, error) {
+	return nil, nil
+}
+
 // ExecuteCommand provides execution of the command
 func (d *DB) ExecuteCommand(command string) error {
 	connString := fmt.Sprintf("user=%s password=%s dbname=%s",

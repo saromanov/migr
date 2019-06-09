@@ -114,6 +114,14 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 	return migs, nil
 }
 
+// isApplyed checks if migration was already applied
 func (a *App) isApplyed(d directory) bool {
-	return false
+	migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
+	if err != nil {
+		return false
+	}
+	if migr == nil {
+		return false
+	}
+	return true
 }
