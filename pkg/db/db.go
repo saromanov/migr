@@ -105,7 +105,19 @@ func (d *DB) GetMigrationByTheVersion(version int64) (*model.Migration, error) {
 	}
 	defer rows.Close()
 
-	return nil, nil
+	mig := new(model.Migration)
+	for rows.Next() {
+		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes)
+		if err != nil {
+			return nil, err
+		}
+		return nil, err
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return mig, nil
 }
 
 // ExecuteCommand provides execution of the command
