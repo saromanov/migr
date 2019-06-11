@@ -86,7 +86,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 		}
 
 		if err := a.db.ExecuteCommand(string(file)); err != nil {
-			return errors.Wrap(err, "migrations is not applied")
+			return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", d.timestamp))
 		}
 	}
 	return nil
