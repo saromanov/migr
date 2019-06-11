@@ -77,6 +77,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 	for _, d := range dirs {
 		ok := a.isApplyed(d)
 		if ok {
+			Info("migration %d is applied", d.timestamp)
 			continue
 		}
 		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
