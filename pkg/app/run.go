@@ -80,6 +80,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 			Info("migration %d is applied", d.timestamp)
 			continue
 		}
+		Info("trying to apply migration", d.timestamp)
 		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
 		if err != nil {
 			return errors.Wrap(err, "unable to read up.sql")
