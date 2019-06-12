@@ -23,6 +23,13 @@ func makeApp(c *cli.Context) error {
 		}
 	}
 
+	info := c.String("info")
+	if info != "" {
+		if err := a.Info(); err != nil {
+			return err
+		}
+	}
+
 	run := c.String("run")
 	if run != "" {
 		if err := a.Run(run); err != nil {
@@ -53,6 +60,11 @@ func main() {
 			Name:  "down",
 			Value: "",
 			Usage: "revert migrations",
+		},
+		cli.StringFlag{
+			Name:  "info",
+			Value: "",
+			Usage: "get info about migrations",
 		},
 		cli.StringFlag{
 			Name:  "password",
