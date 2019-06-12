@@ -111,12 +111,13 @@ func (d *DB) GetMigrationByTheVersion(version int64) (*model.Migration, error) {
 		if err != nil {
 			return nil, err
 		}
-		return nil, err
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-
+	if mig.ID == 0 {
+		return nil, errors.Wrap(err, "unable to find migration")
+	}
 	return mig, nil
 }
 
