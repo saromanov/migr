@@ -8,4 +8,5 @@ type Migration struct {
 	Hash         string
 	Applied      bool
 	ErrorMessage string
+	Failed       bool
 }

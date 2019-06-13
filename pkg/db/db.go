@@ -54,7 +54,7 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 		return 0, errors.Wrap(err, "unable to open connection")
 	}
 
-	result, err := db.Exec(fmt.Sprintf("INSERT INTO %s(version, changes, applied bool) VALUES ($1, $2, $3)", dataBaseTable), version, version, false)
+	result, err := db.Exec(fmt.Sprintf("INSERT INTO %s(version, changes, applied, failed) VALUES ($1, $2, $3, $4)", dataBaseTable), version, version, false, false)
 	if err != nil {
 		return 0, fmt.Errorf("unable to execute: %v", err)
 	}
@@ -67,7 +67,10 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 }
 
 // WriteMigrationVersion provides writing of migration version
-func (d *DB) WriteMigrationVersion(version string) error {
+func (d *DB) WriteMigrationVersion(id int64, version string) error {
+	if id == 0 {
+		return fmt.Errorf("id is not defined")
+	}
 	connStr := d.getConnectionString()
 	db, err := sql.Open(d.Driver, connStr)
 	if err != nil {
