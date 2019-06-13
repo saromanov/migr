@@ -46,6 +46,22 @@ func (d *DB) CreateTable() error {
 	return nil
 }
 
+// CreateMigrationVersion provides beginning of the phase for create migration version
+func (d *DB) CreateMigrationVersion(version string) error {
+	connStr := d.getConnectionString()
+	db, err := sql.Open(d.Driver, connStr)
+	if err != nil {
+		return errors.Wrap(err, "unable to open connection")
+	}
+
+	_, err = db.Exec(fmt.Sprintf("INSERT INTO %s(version, changes, applied bool) VALUES ($1, $2, $3)", dataBaseTable), version, version, false)
+	if err != nil {
+		return fmt.Errorf("unable to execute: %v", err)
+	}
+
+	return nil
+}
+
 // WriteMigrationVersion provides writing of migration version
 func (d *DB) WriteMigrationVersion(version string) error {
 	connStr := d.getConnectionString()
