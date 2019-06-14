@@ -39,7 +39,7 @@ func (d *DB) CreateTable() error {
 		return errors.Wrap(err, "error to ping db")
 	}
 
-	_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s( id integer, version int8, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128) )", dataBaseTable))
+	_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s( id integer, version int8, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128), failed bool )", dataBaseTable))
 	if err != nil {
 		return errors.Wrap(err, "unable to create migr table")
 	}
@@ -54,6 +54,9 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 		return 0, errors.Wrap(err, "unable to open connection")
 	}
 
+	if err := d.CreateTable(); err != nil {
+		return 0, errors.Wrap(err, "unable to create table")
+	}
 	result, err := db.Exec(fmt.Sprintf("INSERT INTO %s(version, changes, applied, failed) VALUES ($1, $2, $3, $4)", dataBaseTable), version, version, false, false)
 	if err != nil {
 		return 0, fmt.Errorf("unable to execute: %v", err)
