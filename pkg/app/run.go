@@ -103,7 +103,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 			return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", d.timestamp))
 		}
 
-		err = a.db.WriteMigrationVersion(id)
+		err = a.db.WriteMigrationVersion(id, hash)
 		if err != nil {
 			return errors.Wrap(err, "unable to create migration record")
 		}
@@ -149,7 +149,8 @@ func (a *App) isApplyed(d directory, hash string) (bool, error) {
 	if migr == nil {
 		return false, nil
 	}
-	if migr.Hash != &hash {
+
+	if *migr.Hash != hash {
 		return false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
 	}
 	return true, nil
