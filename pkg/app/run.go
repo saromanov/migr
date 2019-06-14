@@ -74,6 +74,7 @@ func sortMigrDirs(dirs []directory) []directory {
 
 // applyMigrations makes migrations
 func (a *App) applyMigrations(dirs []directory) error {
+	var migrations int
 	for _, d := range dirs {
 		ok := a.isApplyed(d)
 		if ok {
@@ -99,6 +100,10 @@ func (a *App) applyMigrations(dirs []directory) error {
 		if err != nil {
 			return errors.Wrap(err, "unable to create migration record")
 		}
+		migrations++
+	}
+	if migrations > 0 {
+		Info("%d migrations is applied", migrations)
 	}
 	return nil
 }
