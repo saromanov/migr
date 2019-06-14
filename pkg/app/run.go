@@ -100,6 +100,8 @@ func (a *App) applyMigrations(dirs []directory) error {
 		if err != nil {
 			return errors.Wrap(err, "unable to create migration record")
 		}
+
+		Info("migration %d is applied", d.timestamp)
 		migrations++
 	}
 	if migrations > 0 {
