@@ -130,7 +130,7 @@ func (d *DB) GetMigrationByTheVersion(version int64) (*model.Migration, error) {
 
 	mig := new(model.Migration)
 	for rows.Next() {
-		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes)
+		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes, &mig.Hash, &mig.Applied, &mig.ErrorMessage, &mig.Failed)
 		if err != nil {
 			return nil, err
 		}

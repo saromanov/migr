@@ -137,6 +137,7 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 func (a *App) isApplyed(d directory) bool {
 	migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
 	if err != nil {
+		fmt.Println("ERR: ", err)
 		return false
 	}
 	if migr == nil {
