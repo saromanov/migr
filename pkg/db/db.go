@@ -57,14 +57,11 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 	if err := d.CreateTable(); err != nil {
 		return 0, errors.Wrap(err, "unable to create table")
 	}
-	result, err := db.Exec(fmt.Sprintf("INSERT INTO %s(version, changes, applied, failed) VALUES ($1, $2, $3, $4)", dataBaseTable), version, version, false, false)
-	if err != nil {
-		return 0, fmt.Errorf("unable to execute: %v", err)
-	}
 
-	id, err := result.LastInsertId()
+	var id int64
+	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, failed) VALUES ($1, $2, $3, $4) RETURNING id", dataBaseTable), version, version, false, false).Scan(&id)
 	if err != nil {
-		return 0, err
+		return 0, errors.Wrap(err, "unable to insert data")
 	}
 	return id, nil
 }
