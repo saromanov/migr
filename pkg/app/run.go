@@ -1,6 +1,8 @@
 package app
 
 import (
+	"crypto/sha1"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"sort"
@@ -76,16 +78,21 @@ func sortMigrDirs(dirs []directory) []directory {
 func (a *App) applyMigrations(dirs []directory) error {
 	var migrations int
 	for _, d := range dirs {
-		ok := a.isApplyed(d)
+		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
+		if err != nil {
+			return errors.Wrap(err, "unable to read up.sql")
+		}
+
+		hash, _ := a.hashText(file)
+		ok, err := a.isApplyed(d, hash)
+		if err != nil {
+			return errors.Wrap(err, "error on applied migration")
+		}
 		if ok {
 			Info("migration %d is applied", d.timestamp)
 			continue
 		}
 		Info("trying to apply migration %d", d.timestamp)
-		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
-		if err != nil {
-			return errors.Wrap(err, "unable to read up.sql")
-		}
 
 		id, err := a.db.CreateMigrationVersion(fmt.Sprintf("%d", d.timestamp))
 		if err != nil {
@@ -134,14 +141,26 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 }
 
 // isApplyed checks if migration was already applied
-func (a *App) isApplyed(d directory) bool {
+func (a *App) isApplyed(d directory, hash string) (bool, error) {
 	migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
 	if err != nil {
-		fmt.Println("ERR: ", err)
-		return false
+		return false, nil
 	}
 	if migr == nil {
-		return false
+		return false, nil
 	}
-	return true
+	if migr.Hash != &hash {
+		return false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
+	}
+	return true, nil
+}
+
+// hashText returns hash of the up file
+func (a *App) hashText(text []byte) (string, error) {
+	hasher := sha1.New()
+	_, err := hasher.Write(text)
+	if err != nil {
+		return "", err
+	}
+	return base64.URLEncoding.EncodeToString(hasher.Sum(nil)), nil
 }
