@@ -86,7 +86,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
 
-		id, err := a.db.GetMigrationByTheVersion(d.timestamp)
+		id, err := a.db.CreateMigrationVersion(fmt.Sprintf("%d", d.timestamp))
 		if err != nil {
 			return errors.Wrap(err, "unable to create migration record")
 		}
@@ -95,7 +95,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 			return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", d.timestamp))
 		}
 
-		err = WriteMigrationVersion(id)
+		err = a.db.WriteMigrationVersion(id)
 		if err != nil {
 			return errors.Wrap(err, "unable to create migration record")
 		}
