@@ -12,7 +12,7 @@ func (a *App) Info() error {
 	}
 
 	for _, mig := range migs {
-		Info("migration: %d", mig.Version)
+		Info("migration: %d applied %v", mig.Version, mig.Applied)
 	}
 	return nil
 }
