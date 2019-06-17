@@ -23,8 +23,7 @@ func makeApp(c *cli.Context) error {
 		}
 	}
 
-	info := c.String("info")
-	if info != "" {
+	if c.Bool("info") {
 		if err := a.Info(); err != nil {
 			return err
 		}
@@ -36,6 +35,7 @@ func makeApp(c *cli.Context) error {
 			return err
 		}
 	}
+
 	return nil
 }
 func main() {
@@ -61,10 +61,9 @@ func main() {
 			Value: "",
 			Usage: "revert migrations",
 		},
-		cli.StringFlag{
+		cli.BoolTFlag{
 			Name:  "info",
-			Value: "",
-			Usage: "get info about migrations",
+			Usage: "Return info about migrations",
 		},
 		cli.StringFlag{
 			Name:  "password",
