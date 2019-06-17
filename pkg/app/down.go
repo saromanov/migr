@@ -1,17 +1,16 @@
 package app
 
-import (
-	"github.com/pkg/errors"
-)
-
 // Down defines downgrade for migrations
 func (a *App) Down(path string) error {
-	dirs, err := getMigrDirs(path)
+	dirs, err := getMigrationsDirs(path)
 	if err != nil {
 		return err
 	}
-	if len(dirs) == 0 {
-		return errors.New("migr directories is not found")
+
+	dirs = sortMigrDirs(dirs)
+
+	if err := a.applyMigrations(dirs, "down.sql"); err != nil {
+		return err
 	}
 
 	return nil

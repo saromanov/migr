@@ -21,7 +21,7 @@ func (a *App) Run(path string) error {
 	}
 	dirs = sortMigrDirs(dirs)
 
-	if err := a.applyMigrations(dirs); err != nil {
+	if err := a.applyMigrations(dirs, "up.sql"); err != nil {
 		return err
 	}
 	return nil
@@ -72,12 +72,12 @@ func sortMigrDirs(dirs []directory) []directory {
 }
 
 // applyMigrations makes migrations
-func (a *App) applyMigrations(dirs []directory) error {
+func (a *App) applyMigrations(dirs []directory, fileName string) error {
 	var migrations int
 	for _, d := range dirs {
-		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
+		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/%s", d.name, fileName))
 		if err != nil {
-			return errors.Wrap(err, "unable to read up.sql")
+			return errors.Wrap(err, fmt.Sprintf("unable to read %s", fileName))
 		}
 
 		hash, _ := a.hashText(file)
