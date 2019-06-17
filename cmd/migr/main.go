@@ -29,6 +29,12 @@ func makeApp(c *cli.Context) error {
 		}
 	}
 
+	if c.Bool("down") {
+		if err := a.Down("."); err != nil {
+			return err
+		}
+	}
+
 	run := c.String("run")
 	if run != "" {
 		if err := a.Run(run); err != nil {
@@ -56,10 +62,9 @@ func main() {
 			Value: "",
 			Usage: "Applying of migrations",
 		},
-		cli.StringFlag{
+		cli.BoolTFlag{
 			Name:  "down",
-			Value: "",
-			Usage: "revert migrations",
+			Usage: "downgrade all migrations",
 		},
 		cli.BoolTFlag{
 			Name:  "info",

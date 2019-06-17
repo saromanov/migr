@@ -15,12 +15,9 @@ import (
 
 // Run provides starting of migrations
 func (a *App) Run(path string) error {
-	dirs, err := getMigrDirs(path)
+	dirs, err := getMigrationsDirs(path)
 	if err != nil {
 		return err
-	}
-	if len(dirs) == 0 {
-		return errors.New("migr directories is not found")
 	}
 	dirs = sortMigrDirs(dirs)
 

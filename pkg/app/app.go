@@ -65,3 +65,15 @@ func createFile(path string) error {
 
 	return nil
 }
+
+func getMigrationsDirs(path string) ([]directory, error) {
+	dirs, err := getMigrDirs(path)
+	if err != nil {
+		return []directory{}, err
+	}
+	if len(dirs) == 0 {
+		return []directory{}, errors.New("migr directories is not found")
+	}
+
+	return dirs, nil
+}
