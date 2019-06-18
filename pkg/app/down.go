@@ -31,9 +31,19 @@ func (a *App) downgradeMigrations(dirs []directory) error {
 			return errors.Wrap(err, "unable to read down.sql")
 		}
 
+		migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
+		if err != nil {
+			return errors.Wrap(err, "unable to get migration record")
+		}
+
 		if err := a.db.ExecuteCommand(string(file)); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", d.timestamp))
 		}
+
+		if err := a.db.WriteMigrationIsApplied(migr.ID, false); err != nil {
+			return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", d.timestamp))
+		}
+
 	}
 	return nil
 }

@@ -85,6 +85,25 @@ func (d *DB) WriteMigrationVersion(id int64, hash string) error {
 	return nil
 }
 
+// WriteMigrationIsApplied updates if migration is applied
+func (d *DB) WriteMigrationIsApplied(id int64, applied bool) error {
+	if id == 0 {
+		return fmt.Errorf("id is not defined")
+	}
+	connStr := d.getConnectionString()
+	db, err := sql.Open(d.Driver, connStr)
+	if err != nil {
+		return errors.Wrap(err, "unable to open connection")
+	}
+
+	_, err = db.Exec("UPDATE migr SET applied = $1 WHERE id = $2", applied, id)
+	if err != nil {
+		return fmt.Errorf("unable to execute: %v", err)
+	}
+
+	return nil
+}
+
 // GetMigrationVersions returns list of migrations
 func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
 	connStr := d.getConnectionString()
