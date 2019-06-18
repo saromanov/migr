@@ -19,7 +19,7 @@ func (a *App) Run(path string) error {
 	if err != nil {
 		return err
 	}
-	dirs = sortMigrDirs(dirs)
+	dirs = sortMigrDirs(dirs, 0)
 
 	if err := a.applyMigrations(dirs); err != nil {
 		return err
@@ -64,9 +64,12 @@ func getMigrDirs(path string) ([]directory, error) {
 
 // sortMigrDirs applyins sorting of directories
 // by timestamp on the name
-func sortMigrDirs(dirs []directory) []directory {
+func sortMigrDirs(dirs []directory, direction uint) []directory {
 	sort.Slice(dirs[:], func(i, j int) bool {
-		return dirs[i].timestamp < dirs[j].timestamp
+		if direction == 0 {
+			return dirs[i].timestamp < dirs[j].timestamp
+		}
+		return dirs[i].timestamp > dirs[j].timestamp
 	})
 	return dirs
 }

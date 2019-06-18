@@ -14,7 +14,7 @@ func (a *App) Down(path string) error {
 		return err
 	}
 
-	dirs = sortMigrDirs(dirs)
+	dirs = sortMigrDirs(dirs, 1)
 
 	if err := a.downgradeMigrations(dirs); err != nil {
 		return err
