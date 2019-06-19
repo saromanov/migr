@@ -42,6 +42,13 @@ func makeApp(c *cli.Context) error {
 		}
 	}
 
+	downTo := c.String("down-to")
+	if run != "" {
+		if err := a.DownTo(downTo); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 func main() {
@@ -63,8 +70,14 @@ func main() {
 			Usage: "Applying of migrations",
 		},
 		cli.BoolTFlag{
-			Name:  "down",
-			Usage: "downgrade all migrations",
+			Name:   "down",
+			Usage:  "downgrade all migrations",
+			Hidden: true,
+		},
+		cli.StringFlag{
+			Name:  "down-to",
+			Value: "",
+			Usage: "downgrade migration to version",
 		},
 		cli.BoolTFlag{
 			Name:  "info",

@@ -28,7 +28,6 @@ func (a *App) downgradeMigrations(dirs []directory) error {
 		if err != nil {
 			return errors.Wrap(err, "unable to read down.sql")
 		}
-
 		migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
 		if err != nil {
 			return errors.Wrap(err, "unable to get migration record")
