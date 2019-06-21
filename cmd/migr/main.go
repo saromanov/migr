@@ -42,7 +42,7 @@ func makeApp(c *cli.Context) error {
 	}
 
 	downTo := c.String("down-to")
-	if run != "" {
+	if downTo != "" {
 		if err := a.DownTo(downTo); err != nil {
 			return err
 		}

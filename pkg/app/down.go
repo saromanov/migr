@@ -23,7 +23,7 @@ func (a *App) Down(path string) error {
 // downgradeMigrations makes migrations
 func (a *App) downgradeMigrations(dirs []directory) error {
 	for _, d := range dirs {
-		if err := a.downgradeMigration(".", d.timestamp); err != nil {
+		if err := a.downgradeMigration(d.name, d.timestamp); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("unable to downgrade migration %v", d.timestamp))
 		}
 		Info("migration %d is downgraded", d.timestamp)
