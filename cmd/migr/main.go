@@ -22,7 +22,6 @@ func makeApp(c *cli.Context) error {
 			return err
 		}
 	}
-
 	if c.Bool("info") {
 		if err := a.Info(); err != nil {
 			return err
@@ -69,7 +68,7 @@ func main() {
 			Value: "",
 			Usage: "Applying of migrations",
 		},
-		cli.BoolTFlag{
+		cli.BoolFlag{
 			Name:   "down",
 			Usage:  "downgrade all migrations",
 			Hidden: true,
@@ -79,7 +78,7 @@ func main() {
 			Value: "",
 			Usage: "downgrade migration to version",
 		},
-		cli.BoolTFlag{
+		cli.BoolFlag{
 			Name:  "info",
 			Usage: "Return info about migrations",
 		},
