@@ -30,9 +30,10 @@ func (a *App) DownTo(version string) error {
 		if d.timestamp == mig.Version {
 			break
 		}
-		if err := a.downgradeMigration(".", d.timestamp); err != nil {
+		if err := a.downgradeMigration(d.name, d.timestamp); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("unable to downgrade migration %v", d.timestamp))
 		}
+		Info("migration %d is downgraded", d.timestamp)
 	}
 
 	return nil

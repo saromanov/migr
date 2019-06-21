@@ -149,7 +149,7 @@ func (a *App) isApplyed(d directory, hash string) (bool, error) {
 		return false, nil
 	}
 
-	if *migr.Hash != hash {
+	if migr != nil && *migr.Hash != hash {
 		return false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
 	}
 	return true, nil
