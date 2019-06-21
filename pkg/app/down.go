@@ -44,3 +44,24 @@ func (a *App) downgradeMigrations(dirs []directory) error {
 	}
 	return nil
 }
+
+// downgradeMigration provides downgrading of migration by the version
+func (a *App) downgradeMigration(path string, timestamp int64) error {
+	file, err := ioutil.ReadFile(fmt.Sprintf("./%s/down.sql", path))
+	if err != nil {
+		return errors.Wrap(err, "unable to read down.sql")
+	}
+	migr, err := a.db.GetMigrationByTheVersion(timestamp)
+	if err != nil {
+		return errors.Wrap(err, "unable to get migration record")
+	}
+
+	if err := a.db.ExecuteCommand(string(file)); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", timestamp))
+	}
+
+	if err := a.db.WriteMigrationIsApplied(migr.ID, false); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", timestamp))
+	}
+	return nil
+}
