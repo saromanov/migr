@@ -82,7 +82,6 @@ func (a *App) applyMigrations(dirs []directory) error {
 		if err != nil {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
-
 		hash, _ := a.hashText(file)
 		ok, err := a.isApplyed(d, hash)
 		if err != nil {
