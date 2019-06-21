@@ -41,7 +41,9 @@ func (a *App) downgradeMigration(path string, timestamp int64) error {
 	if err != nil {
 		return errors.Wrap(err, "unable to get migration record")
 	}
-
+	if !migr.Applied {
+		return nil
+	}
 	if err := a.db.ExecuteCommand(string(file)); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", timestamp))
 	}
