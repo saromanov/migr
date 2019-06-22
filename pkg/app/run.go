@@ -77,18 +77,21 @@ func sortMigrDirs(dirs []directory, direction uint) []directory {
 // applyMigrations makes migrations
 func (a *App) applyMigrations(dirs []directory) error {
 	var migrations int
-	for _, d := range dirs {
+	for i, d := range dirs {
 		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
 		if err != nil {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
 		hash, _ := a.hashText(file)
-		ok, err := a.isApplyed(d, hash)
+		ok, err := a.isApplyedAndHashed(d, hash)
 		if err != nil {
 			return errors.Wrap(err, "error on applied migration")
 		}
 		if ok {
 			Info("migration %d is applied", d.timestamp)
+			if i < len(dirs) {
+				a.checkNextMigration(dirs[i+1].timestamp)
+			}
 			continue
 		}
 		Info("trying to apply migration %d", d.timestamp)
@@ -116,6 +119,14 @@ func (a *App) applyMigrations(dirs []directory) error {
 	return nil
 }
 
+// if migration is applied, then next one should be applied too
+// if next one is not applied, then this migration setting
+// to the pending status
+func (a *App) checkNextMigration(version int64) bool {
+	_, ok := a.isApplied(directory{timestamp: version})
+	return ok
+}
+
 // applyMigration provides applying of migration
 func (a *App) applyMigration(path string) error {
 	file, err := ioutil.ReadFile(path)
@@ -139,22 +150,25 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 	return migs, nil
 }
 
-// isApplyed checks if migration was already applied
-func (a *App) isApplyed(d directory, hash string) (bool, error) {
-	migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
-	if err != nil {
-		return false, nil
-	}
-	if migr == nil {
-		return false, nil
-	}
-	if !migr.Applied {
+// isApplyedAndHashed checks if migration was already applied and hash sum is equal
+func (a *App) isApplyedAndHashed(d directory, hash string) (bool, error) {
+	migr, ok := a.isApplied(d)
+	if !ok {
 		return false, nil
 	}
 	if migr != nil && *migr.Hash != hash {
 		return false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
 	}
 	return true, nil
+}
+
+// isApplyed checks if migration was already applied
+func (a *App) isApplied(d directory) (*model.Migration, bool) {
+	migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
+	if err != nil || migr == nil || !migr.Applied {
+		return nil, false
+	}
+	return migr, true
 }
 
 // hashText returns hash of the up file

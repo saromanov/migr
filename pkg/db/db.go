@@ -83,7 +83,7 @@ func (d *DB) WriteMigrationVersion(id int64, hash string) error {
 		return errors.Wrap(err, "unable to open connection")
 	}
 
-	_, err = db.Exec("UPDATE migr SET applied = $1, hash = $2 WHERE id = $3", true, hash, id)
+	_, err = db.Exec("UPDATE migr SET applied = $1, hash = $2, status = $3 WHERE id = $4", true, hash, appliedStatus, id)
 	if err != nil {
 		return fmt.Errorf("unable to execute: %v", err)
 	}
