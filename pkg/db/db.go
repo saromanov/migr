@@ -39,7 +39,7 @@ func (d *DB) CreateTable() error {
 		return errors.Wrap(err, "error to ping db")
 	}
 
-	_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s( id SERIAL, version int8 UNIQUE, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128), failed bool )", dataBaseTable))
+	_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s( id SERIAL, version int8 UNIQUE, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128), failed bool, status varchar(16) )", dataBaseTable))
 	if err != nil {
 		return errors.Wrap(err, "unable to create migr table")
 	}

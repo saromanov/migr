@@ -9,4 +9,5 @@ type Migration struct {
 	Applied      bool
 	ErrorMessage *string
 	Failed       bool
+	Status       string
 }
