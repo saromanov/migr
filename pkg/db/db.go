@@ -10,7 +10,13 @@ import (
 	"github.com/saromanov/migr/pkg/model"
 )
 
-const dataBaseTable = "migr"
+const (
+	dataBaseTable  = "migr"
+	appliedStatus  = "applied"
+	preparedStatus = "prepared"
+	pendingStatus  = "pending"
+	rejectedStatus = "rejected"
+)
 
 // DB provides handling of db data
 type DB struct {
@@ -59,7 +65,7 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 	}
 
 	var id int64
-	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, failed) VALUES ($1, $2, $3, $4) RETURNING id", dataBaseTable), version, version, false, false).Scan(&id)
+	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, status, failed) VALUES ($1, $2, $3, $4, $5) RETURNING id", dataBaseTable), version, version, false, preparedStatus, false).Scan(&id)
 	if err != nil {
 		return 0, errors.Wrap(err, "unable to insert data")
 	}
