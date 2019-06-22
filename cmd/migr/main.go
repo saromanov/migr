@@ -34,6 +34,12 @@ func makeApp(c *cli.Context) error {
 		}
 	}
 
+	if c.Bool("resolve") {
+		if err := a.Resolve("."); err != nil {
+			return err
+		}
+	}
+
 	run := c.String("run")
 	if run != "" {
 		if err := a.Run(run); err != nil {
@@ -71,6 +77,11 @@ func main() {
 		cli.BoolFlag{
 			Name:   "down",
 			Usage:  "downgrade all migrations",
+			Hidden: true,
+		},
+		cli.BoolFlag{
+			Name:   "resolve",
+			Usage:  "resolving of list of migrations",
 			Hidden: true,
 		},
 		cli.StringFlag{
