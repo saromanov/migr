@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 
 	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/db"
 )
 
 // Down defines downgrade for migrations
@@ -48,7 +49,7 @@ func (a *App) downgradeMigration(path string, timestamp int64) error {
 		return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", timestamp))
 	}
 
-	if err := a.db.WriteMigrationIsApplied(migr.ID, false); err != nil {
+	if err := a.db.UpdateMigration(migr.ID, false, db.RejectedStatus); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", timestamp))
 	}
 	return nil

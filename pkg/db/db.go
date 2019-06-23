@@ -12,10 +12,10 @@ import (
 
 const (
 	dataBaseTable  = "migr"
-	appliedStatus  = "applied"
-	preparedStatus = "prepared"
-	pendingStatus  = "pending"
-	rejectedStatus = "rejected"
+	AppliedStatus  = "applied"
+	PreparedStatus = "prepared"
+	PendingStatus  = "pending"
+	RejectedStatus = "rejected"
 )
 
 // DB provides handling of db data
@@ -65,7 +65,7 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 	}
 
 	var id int64
-	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, status, failed) VALUES ($1, $2, $3, $4, $5) RETURNING id", dataBaseTable), version, version, false, preparedStatus, false).Scan(&id)
+	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, status, failed) VALUES ($1, $2, $3, $4, $5) RETURNING id", dataBaseTable), version, version, false, PreparedStatus, false).Scan(&id)
 	if err != nil {
 		return 0, errors.Wrap(err, "unable to insert data")
 	}
@@ -83,7 +83,7 @@ func (d *DB) WriteMigrationVersion(id int64, hash string) error {
 		return errors.Wrap(err, "unable to open connection")
 	}
 
-	_, err = db.Exec("UPDATE migr SET applied = $1, hash = $2, status = $3 WHERE id = $4", true, hash, appliedStatus, id)
+	_, err = db.Exec("UPDATE migr SET applied = $1, hash = $2, status = $3 WHERE id = $4", true, hash, AppliedStatus, id)
 	if err != nil {
 		return fmt.Errorf("unable to execute: %v", err)
 	}

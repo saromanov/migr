@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+	"github.com/saromanov/migr/pkg/db"
 	"github.com/saromanov/migr/pkg/model"
 )
 
@@ -131,10 +132,10 @@ func (a *App) applyMigrations(dirs []directory) error {
 // if migration is not exist, then apply this
 // if migration on pending status, then skip it
 func (a *App) handleApplyingMigration(migr *model.Migration) (bool, error) {
-	if migr.Status == rejectedStatus {
+	if migr.Status == db.RejectedStatus {
 		return false, a.db.UpdateMigration(migr.ID, true, db.AppliedStatus)
 	}
-	return trur, nil
+	return true, nil
 }
 
 // if migration is applied, then next one should be applied too
