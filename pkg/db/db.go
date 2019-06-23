@@ -91,8 +91,8 @@ func (d *DB) WriteMigrationVersion(id int64, hash string) error {
 	return nil
 }
 
-// WriteMigrationIsApplied updates if migration is applied
-func (d *DB) WriteMigrationIsApplied(id int64, applied bool) error {
+// UpdateMigration updates if migration is applied
+func (d *DB) UpdateMigration(id int64, applied bool, status string) error {
 	if id == 0 {
 		return fmt.Errorf("id is not defined")
 	}
@@ -102,7 +102,7 @@ func (d *DB) WriteMigrationIsApplied(id int64, applied bool) error {
 		return errors.Wrap(err, "unable to open connection")
 	}
 
-	_, err = db.Exec("UPDATE migr SET applied = $1 WHERE id = $2", applied, id)
+	_, err = db.Exec("UPDATE migr SET applied = $1,status = $3 WHERE id = $2", applied, id, status)
 	if err != nil {
 		return fmt.Errorf("unable to execute: %v", err)
 	}

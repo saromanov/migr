@@ -83,16 +83,21 @@ func (a *App) applyMigrations(dirs []directory) error {
 			return errors.Wrap(err, "unable to read up.sql")
 		}
 		hash, _ := a.hashText(file)
-		ok, err := a.isApplyedAndHashed(d, hash)
+		migr, ok, err := a.isApplyedAndHashed(d, hash)
 		if err != nil {
 			return errors.Wrap(err, "error on applied migration")
 		}
 		if ok {
 			Info("migration %d is applied", d.timestamp)
 			if i+1 < len(dirs) {
-				a.checkNextMigration(dirs[i+1].timestamp)
+				if applied := a.checkNextMigration(dirs[i+1].timestamp); !applied {
+					Info("migration %d is not applied. Skip", d.timestamp)
+				}
 			}
 			continue
+		}
+		if migr != nil {
+
 		}
 		Info("trying to apply migration %d", d.timestamp)
 
@@ -117,6 +122,19 @@ func (a *App) applyMigrations(dirs []directory) error {
 		Info("%d migrations is applied", migrations)
 	}
 	return nil
+}
+
+// handleApplyingMigration provides checking of migration
+// if migration on Rejected status, then trying to apply this
+// an change status to applied
+//
+// if migration is not exist, then apply this
+// if migration on pending status, then skip it
+func (a *App) handleApplyingMigration(migr *model.Migration) (bool, error) {
+	if migr.Status == rejectedStatus {
+		return false, a.db.UpdateMigration(migr.ID, true, db.AppliedStatus)
+	}
+	return trur, nil
 }
 
 // if migration is applied, then next one should be applied too
@@ -151,15 +169,15 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 }
 
 // isApplyedAndHashed checks if migration was already applied and hash sum is equal
-func (a *App) isApplyedAndHashed(d directory, hash string) (bool, error) {
+func (a *App) isApplyedAndHashed(d directory, hash string) (*model.Migration, bool, error) {
 	migr, ok := a.isApplied(d)
 	if !ok {
-		return false, nil
+		return nil, false, nil
 	}
 	if migr != nil && *migr.Hash != hash {
-		return false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
+		return nil, false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
 	}
-	return true, nil
+	return migr, true, nil
 }
 
 // isApplyed checks if migration was already applied
