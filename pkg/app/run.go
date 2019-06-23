@@ -89,7 +89,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 		}
 		if ok {
 			Info("migration %d is applied", d.timestamp)
-			if i < len(dirs) {
+			if i+1 < len(dirs) {
 				a.checkNextMigration(dirs[i+1].timestamp)
 			}
 			continue
