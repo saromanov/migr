@@ -105,6 +105,7 @@ func (a *App) applyMigrations(dirs []directory) error {
 			if err != nil {
 				return errors.Wrap(err, "unable to update migration")
 			}
+			Info("changing status to applying on migration %d", d.timestamp)
 			continue
 		}
 		Info("trying to apply migration %d", d.timestamp)
