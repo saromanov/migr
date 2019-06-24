@@ -98,7 +98,14 @@ func (a *App) applyMigrations(dirs []directory) error {
 			continue
 		}
 		if migr != nil {
-
+			if err := a.db.ExecuteCommand(string(file)); err != nil {
+				return errors.Wrap(err, fmt.Sprintf("migration %d is not applied", d.timestamp))
+			}
+			_, err := a.handleApplyingMigration(migr)
+			if err != nil {
+				return errors.Wrap(err, "unable to update migration")
+			}
+			continue
 		}
 		Info("trying to apply migration %d", d.timestamp)
 
@@ -173,7 +180,7 @@ func (a *App) getAppliedMigrations(dbname string) ([]*model.Migration, error) {
 func (a *App) isApplyedAndHashed(d directory, hash string) (*model.Migration, bool, error) {
 	migr, ok := a.isApplied(d)
 	if !ok {
-		return nil, false, nil
+		return migr, false, nil
 	}
 	if migr != nil && *migr.Hash != hash {
 		return nil, false, fmt.Errorf("hash of the migration %d is not equal", d.timestamp)
@@ -184,8 +191,11 @@ func (a *App) isApplyedAndHashed(d directory, hash string) (*model.Migration, bo
 // isApplyed checks if migration was already applied
 func (a *App) isApplied(d directory) (*model.Migration, bool) {
 	migr, err := a.db.GetMigrationByTheVersion(d.timestamp)
-	if err != nil || migr == nil || !migr.Applied {
+	if err != nil || migr == nil {
 		return nil, false
+	}
+	if !migr.Applied {
+		return migr, false
 	}
 	return migr, true
 }
