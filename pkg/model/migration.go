@@ -10,4 +10,5 @@ type Migration struct {
 	ErrorMessage *string
 	Failed       bool
 	Status       string
+	CreatedAt    uint64
 }

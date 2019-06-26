@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -45,7 +46,7 @@ func (d *DB) CreateTable() error {
 		return errors.Wrap(err, "error to ping db")
 	}
 
-	_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s( id SERIAL, version int8 UNIQUE, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128), failed bool, status varchar(16) )", dataBaseTable))
+	_, err = db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s( id SERIAL, version int8 UNIQUE, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128), failed bool, status varchar(16), created_at int8 )", dataBaseTable))
 	if err != nil {
 		return errors.Wrap(err, "unable to create migr table")
 	}
@@ -65,7 +66,7 @@ func (d *DB) CreateMigrationVersion(version string) (int64, error) {
 	}
 
 	var id int64
-	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, status, failed) VALUES ($1, $2, $3, $4, $5) RETURNING id", dataBaseTable), version, version, false, PreparedStatus, false).Scan(&id)
+	err = db.QueryRow(fmt.Sprintf("INSERT INTO %s(version, changes, applied, status, failed, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id", dataBaseTable), version, version, false, PreparedStatus, false, time.Now().UnixNano()).Scan(&id)
 	if err != nil {
 		return 0, errors.Wrap(err, "unable to insert data")
 	}
@@ -155,7 +156,7 @@ func (d *DB) GetMigrationByTheVersion(version int64) (*model.Migration, error) {
 
 	mig := new(model.Migration)
 	for rows.Next() {
-		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes, &mig.Hash, &mig.Applied, &mig.ErrorMessage, &mig.Failed, &mig.Status)
+		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes, &mig.Hash, &mig.Applied, &mig.ErrorMessage, &mig.Failed, &mig.Status, &mig.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
