@@ -31,7 +31,7 @@ func (a *App) Run(path string) error {
 // getMigrDirs returns dirs which contains
 // "migr" on names
 func getMigrDirs(path string) ([]directory, error) {
-	files, err := ioutil.ReadDir(".")
+	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return []directory{}, errors.Wrap(err, "unable to read dir")
 	}

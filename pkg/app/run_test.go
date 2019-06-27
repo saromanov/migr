@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	basicPath = "../..testdata/basic/"
+	basicPath = "../../testdata/basic"
 )
 
 var appTest = app.New("postgres", "pinger", "pinger", "pinger", "pinger", 5432)
