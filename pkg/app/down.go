@@ -34,7 +34,7 @@ func (a *App) downgradeMigrations(dirs []directory) error {
 
 // downgradeMigration provides downgrading of migration by the version
 func (a *App) downgradeMigration(path string, timestamp int64) error {
-	file, err := ioutil.ReadFile(fmt.Sprintf("%s/down.sql", path))
+	file, err := ioutil.ReadFile(fmt.Sprintf("%s/down.sql", a.path))
 	if err != nil {
 		return errors.Wrap(err, "unable to read down.sql")
 	}

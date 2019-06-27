@@ -79,7 +79,7 @@ func sortMigrDirs(dirs []directory, direction uint) []directory {
 func (a *App) applyMigrations(dirs []directory) error {
 	var migrations int
 	for i, d := range dirs {
-		file, err := ioutil.ReadFile(fmt.Sprintf("./%s/up.sql", d.name))
+		file, err := ioutil.ReadFile(fmt.Sprintf("%s/%s/up.sql", a.path, d.name))
 		if err != nil {
 			return errors.Wrap(err, "unable to read up.sql")
 		}

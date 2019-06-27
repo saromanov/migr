@@ -14,6 +14,7 @@ import (
 type App struct {
 	driver string
 	db     *db.DB
+	path   string
 }
 
 type directory struct {
@@ -23,8 +24,13 @@ type directory struct {
 
 // New creates app
 func New(driver, username, password, dbname, host string, port int) *App {
+	path := os.Getenv("MIGR_PATH")
+	if path == "" {
+		path = "."
+	}
 	return &App{
 		driver: driver,
+		path:   path,
 		db: &db.DB{
 			Username: username,
 			Password: password,

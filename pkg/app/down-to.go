@@ -20,7 +20,7 @@ func (a *App) DownTo(version string) error {
 	if mig == nil {
 		return fmt.Errorf("unable to find migration")
 	}
-	dirs, err := getMigrationsDirs(".")
+	dirs, err := getMigrationsDirs(a.path)
 	if err != nil {
 		return err
 	}
