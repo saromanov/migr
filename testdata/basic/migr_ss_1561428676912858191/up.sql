@@ -1,1 +1,1 @@
-CREATE TABLE test1;
+CREATE TABLE test1(id integer, post text);
