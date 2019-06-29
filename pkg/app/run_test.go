@@ -16,11 +16,19 @@ const (
 	migrCreateTable = "CREATE TABLE IF NOT EXISTS migr( id SERIAL, version int8 UNIQUE, changes varchar(128), hash varchar(128), applied bool, error_message varchar(128), failed bool, status varchar(16), created_at int8 )"
 )
 
-var appTest *app.App
+var (
+	appTest *app.App
+	db      *sql.DB
+)
 
 func init() {
 	os.Setenv("MIGR_PATH", basicPath)
 	appTest = app.New("postgres", "pinger", "pinger", "pinger", "pinger", 5432)
+	dbTmp, err := createTestTable()
+	if err != nil {
+		fmt.Printf("unable to init db: %v", err)
+	}
+	db = dbTmp
 }
 
 // Create table for tests
