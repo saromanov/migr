@@ -71,4 +71,11 @@ func TestRun(t *testing.T) {
 	defer dropMigrTable(db)
 	err = appTest.Run(basicPath)
 	assert.NoError(t, err)
+
+	versions, err := appTest.GetMigrationsInfo()
+	if err != nil {
+		assert.NoError(t, err)
+	}
+
+	assert.Equal(t, len(versions), 2)
 }
