@@ -78,9 +78,6 @@ func TestRun(t *testing.T) {
 	assert.NoError(t, err)
 
 	versions, err := appTest.GetMigrationsInfo()
-	if err != nil {
-		assert.NoError(t, err)
-	}
-
-	assert.Equal(t, 2, len(versions))
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(versions))
 }
