@@ -56,8 +56,8 @@ func createMigrTable(db *sql.DB) error {
 	return nil
 }
 
-func dropMigrTable(db *sql.DB) error {
-	_, err := db.Exec("DROP TABLE migr")
+func dropTable(db *sql.DB, name string) error {
+	_, err := db.Exec(fmt.Sprintf("DROP TABLE %s", name))
 	if err != nil {
 		return fmt.Errorf("unable to drop migr table: %v", err)
 	}
@@ -69,7 +69,9 @@ func TestRun(t *testing.T) {
 	err := createMigrTable(db)
 	assert.NoError(t, err)
 	defer func() {
-		err := dropMigrTable(db)
+		err := dropTable(db, "migr")
+		assert.NoError(t, err)
+		err = dropTable(db, "test1")
 		assert.NoError(t, err)
 	}()
 	err = appTest.Run(basicPath)
