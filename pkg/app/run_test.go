@@ -80,4 +80,8 @@ func TestRun(t *testing.T) {
 	versions, err := appTest.GetMigrationsInfo()
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(versions))
+
+	for _, v := range versions {
+		assert.Equal(t, true, v.Applied)
+	}
 }
