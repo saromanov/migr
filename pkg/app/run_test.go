@@ -68,7 +68,10 @@ func dropMigrTable(db *sql.DB) error {
 func TestRun(t *testing.T) {
 	err := createMigrTable(db)
 	assert.NoError(t, err)
-	defer dropMigrTable(db)
+	defer func() {
+		err := dropMigrTable(db)
+		assert.NoError(t, err)
+	}()
 	err = appTest.Run(basicPath)
 	assert.NoError(t, err)
 
@@ -77,5 +80,5 @@ func TestRun(t *testing.T) {
 		assert.NoError(t, err)
 	}
 
-	assert.Equal(t, len(versions), 2)
+	assert.Equal(t, 2, len(versions))
 }
