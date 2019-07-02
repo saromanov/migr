@@ -9,6 +9,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/saromanov/migr/pkg/app"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -23,7 +24,7 @@ var (
 
 func init() {
 	os.Setenv("MIGR_PATH", basicPath)
-	appTest = app.New("postgres", "pinger", "pinger", "pinger", "pinger", 5432)
+	appTest = app.New("postgres", "migr_test", "migr_test", "migr_test", "migr_test", 5432)
 	dbTmp, err := createTestTable()
 	if err != nil {
 		fmt.Printf("unable to init db: %v", err)
@@ -37,7 +38,6 @@ func createTestTable() (*sql.DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error creating connection pool: %v", err)
 	}
-	defer db.Close()
 	ctx := context.Background()
 	err = db.PingContext(ctx)
 	if err != nil {
@@ -66,8 +66,9 @@ func dropMigrTable(db *sql.DB) error {
 }
 
 func TestRun(t *testing.T) {
-	err := appTest.Run(basicPath)
-	if err != nil {
-		t.Errorf("unable to execute run command: %v", err)
-	}
+	err := createMigrTable(db)
+	assert.NoError(t, err)
+	defer dropMigrTable(db)
+	err = appTest.Run(basicPath)
+	assert.NoError(t, err)
 }
