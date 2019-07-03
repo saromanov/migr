@@ -71,11 +71,11 @@ func TestCreate(t *testing.T) {
 	defer func() {
 		err := dropTable(db, "migr")
 		assert.NoError(t, err)
-		err = dropTable(db, "test1")
+		err = dropTable(db, t.Name())
 		assert.NoError(t, err)
 	}()
 
-	err = appTest.Create(basicPath)
+	err = appTest.Create(t.Name())
 	assert.NoError(t, err)
 }
 

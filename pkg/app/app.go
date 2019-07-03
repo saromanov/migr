@@ -47,6 +47,9 @@ func New(driver, username, password, dbname, host string, port int) *App {
 // records on db
 func (a *App) Create(name string) error {
 	path := fmt.Sprintf("migr_%s_%v", name, time.Now().UnixNano())
+	if a.path != "" {
+		path = fmt.Sprintf("%s/migr_%s_%v", a.path, name, time.Now().UnixNano())
+	}
 	if err := a.db.CreateTable(); err != nil {
 		return errors.Wrap(err, "unable to create migr table")
 	}
