@@ -65,6 +65,20 @@ func dropTable(db *sql.DB, name string) error {
 	return nil
 }
 
+func TestCreate(t *testing.T) {
+	err := createMigrTable(db)
+	assert.NoError(t, err)
+	defer func() {
+		err := dropTable(db, "migr")
+		assert.NoError(t, err)
+		err = dropTable(db, "test1")
+		assert.NoError(t, err)
+	}()
+
+	err = appTest.Create(basicPath)
+	assert.NoError(t, err)
+}
+
 func TestRun(t *testing.T) {
 	err := createMigrTable(db)
 	assert.NoError(t, err)
