@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -60,6 +62,25 @@ func dropTable(db *sql.DB, name string) error {
 	_, err := db.Exec(fmt.Sprintf("DROP TABLE %s", name))
 	if err != nil {
 		return fmt.Errorf("unable to drop migr table: %v", err)
+	}
+
+	return nil
+}
+
+func removeMigrDirs(path string) error {
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		return err
+	}
+	for _, f := range files {
+		if !f.IsDir() {
+			continue
+		}
+		name := f.Name()
+		if !strings.Contains(name, "migr") {
+			continue
+
+		}
 	}
 
 	return nil

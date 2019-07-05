@@ -128,7 +128,7 @@ func (d *DB) GetMigrationVersions() ([]*model.Migration, error) {
 	migs := make([]*model.Migration, 0)
 	for rows.Next() {
 		mig := new(model.Migration)
-		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes, &mig.Hash, &mig.Applied, &mig.ErrorMessage, &mig.Failed, &mig.CreatedAt, &mig.Status)
+		err := rows.Scan(&mig.ID, &mig.Version, &mig.Changes, &mig.Hash, &mig.Applied, &mig.ErrorMessage, &mig.Failed, &mig.Status, &mig.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
