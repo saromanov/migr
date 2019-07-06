@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 	"testing"
-
+	"path"
 	"github.com/pkg/errors"
 	"github.com/saromanov/migr/pkg/app"
 	"github.com/stretchr/testify/assert"
@@ -67,20 +67,21 @@ func dropTable(db *sql.DB, name string) error {
 	return nil
 }
 
-func removeMigrDirs(path string) error {
-	files, err := ioutil.ReadDir(path)
+func removeMigrDirs(pathDir string) error {
+	files, err := ioutil.ReadDir(pathDir)
 	if err != nil {
 		return err
 	}
+
 	for _, f := range files {
 		if !f.IsDir() {
 			continue
 		}
-		name := f.Name()
-		if !strings.Contains(name, "migr") {
+		if !strings.Contains(f.Name(), "migr") {
 			continue
 
 		}
+		os.RemoveAll(path.Join([]string{pathDir, f.Name()}...))
 	}
 
 	return nil
