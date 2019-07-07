@@ -95,6 +95,8 @@ func TestCreate(t *testing.T) {
 		assert.NoError(t, err)
 		err = dropTable(db, t.Name())
 		assert.NoError(t, err)
+		err = removeMigrDirs("../../testdata")
+		assert.NoError(t, err)
 	}()
 
 	err = appTest.Create(t.Name())
