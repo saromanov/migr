@@ -108,11 +108,11 @@ func TestRun(t *testing.T) {
 	defer func() {
 		err := dropTable(db, "migr")
 		assert.NoError(t, err)
-		err = dropTable(db, "test1")
-		assert.NoError(t, err)
 		err = removeMigrDirs("../../testdata/basic")
 		assert.NoError(t, err)
 	}()
+	err = appTest.Create(t.Name())
+	assert.NoError(t, err)
 	err = appTest.Run(basicPath)
 	assert.NoError(t, err)
 
