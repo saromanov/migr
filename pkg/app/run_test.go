@@ -82,7 +82,6 @@ func removeMigrDirs(pathDir string) error {
 			continue
 
 		}
-		fmt.Println(f.Name())
 		os.RemoveAll(path.Join([]string{pathDir, f.Name()}...))
 	}
 
@@ -95,7 +94,7 @@ func TestCreate(t *testing.T) {
 	defer func() {
 		err := dropTable(db, "migr")
 		assert.NoError(t, err)
-		err = removeMigrDirs("../../testdata")
+		err = removeMigrDirs("../../testdata/basic")
 		assert.NoError(t, err)
 	}()
 
@@ -111,7 +110,7 @@ func TestRun(t *testing.T) {
 		assert.NoError(t, err)
 		err = dropTable(db, "test1")
 		assert.NoError(t, err)
-		err = removeMigrDirs("../../testdata")
+		err = removeMigrDirs("../../testdata/basic")
 		assert.NoError(t, err)
 	}()
 	err = appTest.Run(basicPath)
