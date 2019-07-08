@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"strings"
 	"testing"
-	"path"
+
 	"github.com/pkg/errors"
 	"github.com/saromanov/migr/pkg/app"
 	"github.com/stretchr/testify/assert"
@@ -81,6 +82,7 @@ func removeMigrDirs(pathDir string) error {
 			continue
 
 		}
+		fmt.Println(f.Name())
 		os.RemoveAll(path.Join([]string{pathDir, f.Name()}...))
 	}
 
@@ -92,8 +94,6 @@ func TestCreate(t *testing.T) {
 	assert.NoError(t, err)
 	defer func() {
 		err := dropTable(db, "migr")
-		assert.NoError(t, err)
-		err = dropTable(db, t.Name())
 		assert.NoError(t, err)
 		err = removeMigrDirs("../../testdata")
 		assert.NoError(t, err)
@@ -110,6 +110,8 @@ func TestRun(t *testing.T) {
 		err := dropTable(db, "migr")
 		assert.NoError(t, err)
 		err = dropTable(db, "test1")
+		assert.NoError(t, err)
+		err = removeMigrDirs("../../testdata")
 		assert.NoError(t, err)
 	}()
 	err = appTest.Run(basicPath)
