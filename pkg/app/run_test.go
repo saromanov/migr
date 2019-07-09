@@ -88,6 +88,11 @@ func removeMigrDirs(pathDir string) error {
 	return nil
 }
 
+func writeFile(t *testing.T, path string, data []byte) {
+	err := ioutil.WriteFile(path, data, 0644)
+	assert.NoError(t, err)
+}
+
 func TestCreate(t *testing.T) {
 	err := createMigrTable(db)
 	assert.NoError(t, err)
@@ -138,7 +143,7 @@ func TestDown(t *testing.T) {
 	assert.NoError(t, err)
 	err = appTest.Run(basicPath)
 	assert.NoError(t, err)
-	
+
 	err = appTest.Down(basicPath)
 	assert.NoError(t, err)
 	versions, err := appTest.GetMigrationsInfo()
