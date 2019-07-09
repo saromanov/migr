@@ -124,3 +124,28 @@ func TestRun(t *testing.T) {
 		assert.Equal(t, true, v.Applied)
 	}
 }
+
+func TestDown(t *testing.T) {
+	err := createMigrTable(db)
+	assert.NoError(t, err)
+	defer func() {
+		err := dropTable(db, "migr")
+		assert.NoError(t, err)
+		err = removeMigrDirs("../../testdata/basic")
+		assert.NoError(t, err)
+	}()
+	err = appTest.Create(t.Name())
+	assert.NoError(t, err)
+	err = appTest.Run(basicPath)
+	assert.NoError(t, err)
+	
+	err = appTest.Down(basicPath)
+	assert.NoError(t, err)
+	versions, err := appTest.GetMigrationsInfo()
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(versions))
+
+	for _, v := range versions {
+		assert.Equal(t, false, v.Applied)
+	}
+}
