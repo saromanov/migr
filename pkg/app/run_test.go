@@ -191,3 +191,27 @@ func TestMultipleDown(t *testing.T) {
 		assert.Equal(t, true, v.Applied)
 	}
 }
+
+func TestDownTo(t *testing.T) {
+	err := createMigrTable(db)
+	assert.NoError(t, err)
+	defer func() {
+		err := dropTable(db, "migr")
+		assert.NoError(t, err)
+		err = removeMigrDirs(basicPath)
+		assert.NoError(t, err)
+	}()
+	err = appTest.Create(t.Name())
+	assert.NoError(t, err)
+	err = appTest.Create(t.Name())
+	assert.NoError(t, err)
+	err = appTest.Run(basicPath)
+	assert.NoError(t, err)
+
+	versions, err := appTest.GetMigrationsInfo()
+	assert.NoError(t, err)
+	assert.NotEqual(t, 0, len(versions))
+	secondVersion := versions[1]
+	err = appTest.DownTo(t, fmt.Sprintf("%d", secondVersion.Version))
+	assert.NoError(t, err)
+}
