@@ -9,5 +9,17 @@ func (a *App) Resolve(path string) error {
 	if len(dirs) == 0 {
 		return nil
 	}
+
+	dirs = sortMigrDirs(dirs, 0)
+
+	migrations, err := a.db.GetMigrationVersions()
+	if err != nil {
+		return err
+	}
+	for _, m := range migrations {
+		if m.Status != "Pending" {
+			continue
+		}
+	}
 	return nil
 }
