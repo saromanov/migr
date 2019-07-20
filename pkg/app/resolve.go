@@ -1,5 +1,7 @@
 package app
 
+import "github.com/saromanov/migr/pkg/model"
+
 // Resolve provides resolving of migrations
 func (a *App) Resolve(path string) error {
 	dirs, err := getMigrationsDirs(path)
@@ -16,10 +18,16 @@ func (a *App) Resolve(path string) error {
 	if err != nil {
 		return err
 	}
+
 	for _, m := range migrations {
 		if m.Status != "Pending" {
 			continue
 		}
+
 	}
+	return nil
+}
+
+func compareDirsAndMigrations(dirs []directory, migrations []*model.Migration) error {
 	return nil
 }
