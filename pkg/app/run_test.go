@@ -212,6 +212,6 @@ func TestDownTo(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotEqual(t, 0, len(versions))
 	secondVersion := versions[1]
-	err = appTest.DownTo(t, fmt.Sprintf("%d", secondVersion.Version))
+	err = appTest.DownTo(fmt.Sprintf("%d", secondVersion.Version))
 	assert.NoError(t, err)
 }
